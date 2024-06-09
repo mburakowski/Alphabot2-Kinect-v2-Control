@@ -1,3 +1,4 @@
+//make sure you have all of this libraries in your repo. 
 import java.util.ArrayList;
 import KinectPV2.KJoint;
 import KinectPV2.*;
@@ -6,9 +7,8 @@ import websockets.*;
 KinectPV2 kinect;
 WebsocketServer wsServer;
 
-// Zmienne do śledzenia czasu gestów
 int gestureStartTime = 0;
-int gestureDurationThreshold = 2000; // 2000 milisekund = 2 sekundy
+int gestureDurationThreshold = 2000; 
 int currentGesture = -1;
 
 void setup() {
@@ -111,14 +111,14 @@ void drawBone(KJoint[] joints, int jointType1, int jointType2) {
 
 void drawHandState(KJoint joint) {
   noStroke();
-  handState(joint.getState(), joint.getType()); // Dodano przekazywanie typu stawu
+  handState(joint.getState(), joint.getType()); 
   pushMatrix();
   translate(joint.getX(), joint.getY(), joint.getZ());
   ellipse(0, 0, 70, 70);
   popMatrix();
 }
 
-void handState(int handState, int jointType) { // Dodano jointType
+void handState(int handState, int jointType) { 
   switch(handState) {
   case KinectPV2.HandState_Open:
     fill(0, 255, 0);
