@@ -2,12 +2,12 @@
 # Title: Alphabot2 kinect gesture control
 # Date: 25/05/2024
 # Description:
-#   Simple app that allows to control Alphabot2 via websocket messages.
+#   Simple app that allows to receive websocket messages.
 # How to use:
 # 1. Make sure that Kinect v2 is connected to your computer and works correctly and both devices are connected to the same wi-fi network.
 # 2. Open Processing and run kinect_open.pde
 # 3. Put your device IP in "uri" section (You can easily find your IP by Command Prompt > ipconfig > IPv4 Adress).
-# 4. Program is ready to run. You can program 3 gestures for each hand manualy.
+# 4. Program is ready to run
 
 # libraries
 import asyncio
