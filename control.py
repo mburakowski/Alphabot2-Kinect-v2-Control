@@ -11,6 +11,10 @@ import RPi.GPIO as GPIO
 from time import sleep
 import atexit
 
+#Define your IP and PORT
+IP = "192.168.1.21"
+PORT = "8080"
+
 # GPIO pin setup for Alphabot2 motors
 Motor1A = 13    # Left motor forward
 Motor1B = 12    # Left motor backward
@@ -87,7 +91,7 @@ atexit.register(cleanup)
 
 # WebSocket connection and message handling
 async def test_websocket():
-    uri = "ws://192.168.1.21:8080/kinect"
+    uri = f"ws://{IP}:{PORT}/kinect"
     async with websockets.connect(uri) as websocket:
         while True:
             message = await websocket.recv()
