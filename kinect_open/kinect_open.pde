@@ -1,18 +1,20 @@
-//make sure you have all of this libraries in your repo. 
 import java.util.ArrayList;
 import KinectPV2.KJoint;
 import KinectPV2.*;
 import websockets.*;
+import processing.video.*;
 
 KinectPV2 kinect;
 WebsocketServer wsServer;
+Capture cam;  
 
+// Zmienne do śledzenia czasu gestów
 int gestureStartTime = 0;
-int gestureDurationThreshold = 2000; 
+int gestureDurationThreshold = 2000; // 2000 milisekund = 2 sekundy
 int currentGesture = -1;
 
 void setup() {
-  size(1024, 728, P3D);
+  size(2048, 728, P3D);  
 
   kinect = new KinectPV2(this);
   kinect.enableDepthMaskImg(true);
@@ -21,10 +23,24 @@ void setup() {
 
   wsServer = new WebsocketServer(this, 8080, "/kinect");
   println("WebSocket server started on port 8080");
+
+  String[] cameras = Capture.list();
+  if (cameras.length == 0) {
+    println("No cameras available for capture.");
+    exit();
+  } else {
+    println("Available cameras:");
+    for (int i = 0; i < cameras.length; i++) {
+      println(cameras[i]);
+    }
+    cam = new Capture(this, cameras[0]);
+    cam.start();
+  }
 }
 
 void draw() {
   background(0);
+  // Wyświetlanie obrazu z Kinecta
   image(kinect.getDepthMaskImage(), 0, 0);
 
   ArrayList<KSkeleton> skeletonArray = kinect.getSkeletonDepthMap();
@@ -52,6 +68,12 @@ void draw() {
     println("Gesture detected for 2 seconds: " + gestureName(currentGesture));
     currentGesture = -1; 
   }
+
+  // Wyświetlanie obrazu z normalnej kamery
+  if (cam.available() == true) {
+    cam.read();
+  }
+  image(cam, 1024, 0);  // Wyświetlanie obrazu kamery po prawej stronie
 }
 
 void drawBody(KJoint[] joints) {
@@ -118,7 +140,7 @@ void drawHandState(KJoint joint) {
   popMatrix();
 }
 
-void handState(int handState, int jointType) { 
+void handState(int handState, int jointType) { // Dodano jointType
   switch(handState) {
   case KinectPV2.HandState_Open:
     fill(0, 255, 0);
@@ -140,11 +162,11 @@ void handState(int handState, int jointType) {
 }
 
 void trackGesture(int handState, int jointType) {
-  int gestureId = handState + jointType * 10; // Unikalny ID gestu dla prawej i lewej ręki
+  int gestureId = handState + jointType * 10; 
   if (currentGesture == gestureId) {
     if (millis() - gestureStartTime >= gestureDurationThreshold) {
       println("Gesture detected for 2 seconds: " + gestureName(currentGesture));
-      wsServer.sendMessage(gestureName(currentGesture)); // Dodano wysyłanie wiadomości WebSocket
+      wsServer.sendMessage(gestureName(currentGesture)); 
       currentGesture = -1; 
     }
   } else {
